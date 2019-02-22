@@ -27,7 +27,10 @@ function addImage({doc, buffer, options: {filename = "output.pdf", directory = p
     return doc;
 }
 
-function createPdf(imageList, options) {
+function createPdf(imageList, options, synchronous = false) {
+    // synchronous property makes it so program downloads every image one after another
+    // as opposed to all at once (makes it easier on some weaker computers)
+
     // initial image
     if (imageList && imageList.length)
         getImageBuffer(imageList.shift())
@@ -35,9 +38,13 @@ function createPdf(imageList, options) {
             // all other images this way
             .then(doc => {
                 if (imageList.length)
-                    return imageList.reduce((prev, imageUrl) => prev
+                    if (synchronous) return imageList.reduce((prev, imageUrl) => prev
                         .then(() => getImageBuffer(imageUrl))
                         .then(buffer => addImage({doc, buffer, options})), Promise.resolve());
+                    else return Promise.all(imageList
+                        .map(url =>  getImageBuffer(url)))
+                        .then(buffers => buffers.reduce((prev, buffer) => addImage({doc, buffer, options})))
+                        .then(() => doc);
                 else return doc;
             })
             .then(doc => doc.end());
