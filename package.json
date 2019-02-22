@@ -1,0 +1,13 @@
+{
+  "name": "imageurls2pdf",
+  "version": "1.0.0",
+  "description": "Module creating pdf file from the array of provided image urls.",
+  "main": "pdf.js",
+  "dependencies": {
+    "buffer-image-size": "^0.6.4",
+    "node-fetch": "^2.3.0",
+    "pdfkit": "^0.9.0"
+  },
+  "author": "Krzysztof Krzeszewski",
+  "license": "ISC"
+}
